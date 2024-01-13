@@ -5,6 +5,20 @@ export const servers: Servers[] = [
         id: "1194951648787828746",
         name: "Server 1",
         earn: "1195326162126254171",
+        coreRoles: [
+            {
+                id: "<@&1195713590443913287>",
+                name: "Member"
+            },
+            {
+                id: "<@&1195713668336341052>",
+                name: "Contributor"
+            },
+            {
+                id: "<@&1195713634626699385>",
+                name: "Lurker"
+            }
+        ],
         roles: [
             {
                 name: "Developer",

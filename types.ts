@@ -7,6 +7,7 @@ export interface Servers {
     name: string;
     id: string;
     earn: string;
+    coreRoles: Roles[];
     roles: Roles[];
 }
 

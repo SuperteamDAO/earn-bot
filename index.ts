@@ -55,7 +55,7 @@ client.once('ready', async () => {
     }
     else {
         bountyMessage += `🚨 New Bounties Listing!\n\n`
-        bounties.slice(0, 2).forEach(x => {
+        bounties.slice(1, 3).forEach(x => {
             const emoji = getEmoji(x.skills[0].skills)
             x.skills.forEach(sk => roles.add(getRoleFromSkill(sk.skills)))
             bountyMessage += `${emoji} ${x.title} (\$${x.rewardAmount})\n\n🔗 <https://earn.superteam.fun/listings/bounties/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties>\n\n`
@@ -63,12 +63,19 @@ client.once('ready', async () => {
     }
 
     const rolesArray = Array.from(roles)
-    
-    bountyMessage += `<@&1195694023013302363>`
 
     servers.map((server) => {
         const guild = client.guilds.cache.get(server.id)
         if (guild) {
+            server.coreRoles.forEach((role) => {
+                bountyMessage += `${role.id} `
+            })
+            rolesArray.forEach((role) => {
+                const guildRole = server.roles.find(x => x.name === role)
+                if (guildRole) {
+                    bountyMessage += `${guildRole.id} `
+                }
+            })
             const channel = guild.channels.cache.get(server.earn)
             if (channel && channel.isTextBased()) {
                 channel.send(bountyMessage)
