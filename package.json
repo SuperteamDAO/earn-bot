@@ -12,9 +12,11 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
-    "mysql2": "^3.7.0"
+    "mysql2": "^3.7.0",
+    "node-cron": "^3.0.3"
   },
   "devDependencies": {
+    "@types/node-cron": "^3.0.11",
     "typescript": "^5.3.3"
   }
 }
