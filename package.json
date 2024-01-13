@@ -1,0 +1,20 @@
+{
+  "name": "earn-bot",
+  "version": "1.0.0",
+  "description": "Superteams Earn bot used to notify new lisitngs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "npx tsc & node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "mysql2": "^3.7.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
