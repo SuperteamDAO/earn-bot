@@ -13,7 +13,7 @@ export interface Servers {
 
 export interface SkillsMapping {
     name: string;
-    role: string;
+    roles: string[] | null;
     emoji: string;
 }
 

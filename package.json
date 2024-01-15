@@ -4,8 +4,7 @@
   "description": "Superteams Earn bot used to notify new lisitngs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx tsc --ignore node_modules & node dist/index.js"
+    "start": "npx tsc & node dist/index.js"
   },
   "author": "Revtpark",
   "license": "ISC",
