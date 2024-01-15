@@ -2,7 +2,7 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import * as dotenv from 'dotenv';
 import * as mysql from 'mysql2/promise';
 import cron from 'node-cron';
-import { Bounties } from './types';
+import { Bounties, Skills } from './types';
 import { servers, skillsMap } from './constants';
 
 dotenv.config();
@@ -24,13 +24,13 @@ const getEmoji = (name: string) => {
     return '🤖'
 }
 
-const getRoleFromSkill = (name: string) => {
-    const skill = skillsMap.find(x => x.name === name)
-    if (skill) return skill.role
+const getRoleFromSkill = (skill: Skills) => {
+    const getSkill = skillsMap.find(x => x.name === skill.skills)
+    if (getSkill) return getSkill.roles
 }
 
 client.once('ready', async () => {
-    console.log(`Logged in as ${client.user?.tag}`);
+    console.log(`⚡Logged in as ${client.user.username}`);
 
     // const cronTime = '*/5 * * * * *'
     const cronTime = '0 */12 * * *'
@@ -40,22 +40,17 @@ client.once('ready', async () => {
         const bounties: Bounties[] = rows as Bounties[];
 
         let roles: Set<string> = new Set();
-        let bountyMessage = ''
+        let bountyMessage = bounties.length === 1? '':`🚨 New Bounties Listing!\n\n`;
 
-        if (bounties.length === 1) {
-            const emoji = getEmoji(bounties[0].skills[0].skills)
-            bounties[0].skills.forEach(sk => roles.add(getRoleFromSkill(sk.skills)))
+        bounties.forEach(x => {
+            const emoji = getEmoji(x.skills[0].skills)
+            x.skills.forEach(sk => roles.add(getRoleFromSkill(sk)))
+            
+            const link = `https://earn.superteam.fun/listings/bounties/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`
+            const modifiedLink = bounties.length === 1? link: `<${link}>`
 
-            bountyMessage += `${emoji} ${bounties[0].title} (\$${bounties[0].rewardAmount})\n\n🔗 https://earn.superteam.fun/listings/bounties/${bounties[0].slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties\n\n`
-        }
-        else {
-            bountyMessage += `🚨 New Bounties Listing!\n\n`
-            bounties.forEach(x => {
-                const emoji = getEmoji(x.skills[0].skills)
-                x.skills.forEach(sk => roles.add(getRoleFromSkill(sk.skills)))
-                bountyMessage += `${emoji} ${x.title} (\$${x.rewardAmount})\n\n🔗 <https://earn.superteam.fun/listings/bounties/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties>\n\n`
-            })
-        }
+            bountyMessage += `${emoji} ${x.title} (\$${x.rewardAmount})\n\n🔗 ${modifiedLink}\n\n`
+        })
 
         const rolesArray = Array.from(roles)
 
@@ -65,6 +60,7 @@ client.once('ready', async () => {
                 server.coreRoles.forEach((role) => {
                     bountyMessage += `${role.id} `
                 })
+                // Make set and dont tag if already in set
                 rolesArray.forEach((role) => {
                     const guildRole = server.roles.find(x => x.name === role)
                     if (guildRole) {
