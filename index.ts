@@ -38,7 +38,7 @@ const getRoleFromSkill = (name: string) => {
 }
 
 client.once('ready', async () => {
-    console.log(`⚡Logged in as ${client.user.username}`);
+    console.log(`⚡ Logged in as ${client.user.username}`);
 
     const cronTime = '*/5 * * * * *'
     // const cronTime = '0 */12 * * *'
@@ -75,10 +75,13 @@ client.once('ready', async () => {
                 server.coreRoles.forEach((role) => {
                     bountyMessage += `${role.id} `
                 })
-                // Make set and dont tag if already in set
+                
+                let rolesAdded = new Set();
                 rolesArray.forEach((role) => {
                     const guildRole = server.roles.find(x => x.name === role)
-                    if (guildRole) {
+                    // Added check to prevent duplicate roles tag
+                    if (guildRole && !rolesAdded.has(guildRole.id)) {
+                        rolesAdded.add(guildRole.id)
                         bountyMessage += `${guildRole.id} `
                     }
                 })
