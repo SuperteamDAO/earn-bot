@@ -168,6 +168,10 @@ export const servers: Servers[] = [
                 id: "<@&1115653334527922176>",
                 name: "Writer"
             }
+            {
+                id: "<@&1115653334527922176>",
+                name: "Video"
+            }
         ]
     },
     {
