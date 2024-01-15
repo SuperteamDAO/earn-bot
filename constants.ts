@@ -109,6 +109,10 @@ export const servers: Servers[] = [
             {
                 id: "<@&1118296252887617627>",
                 name: "Writer"
+            },
+            {
+                id: "<@&1118296252887617627>",
+                name: "Video"
             }
         ]
     },
@@ -167,7 +171,7 @@ export const servers: Servers[] = [
             {
                 id: "<@&1115653334527922176>",
                 name: "Writer"
-            }
+            },
             {
                 id: "<@&1115653334527922176>",
                 name: "Video"
@@ -205,7 +209,7 @@ export const servers: Servers[] = [
     },
     {
         id: "1127152143720255508",
-        name: "Superteam UK",
+        name: "Superteam UAE",
         earn: "1127152144408137737",
         coreRoles: [
             {
