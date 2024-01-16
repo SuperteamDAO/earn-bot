@@ -47,8 +47,9 @@ client.once('ready', async () => {
         const [rows] = await connection.execute(`SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND hackathonprize=0 AND isArchived=0 AND status='OPEN' AND createdAt BETWEEN NOW() - INTERVAL 12 HOUR AND NOW()`);
         const bounties: Bounties[] = rows as Bounties[];
 
+        if (bounties.length === 0) return;
         let roles: Set<string> = new Set();
-        let bountyMessage = bounties.length === 1 ? '' : `🚨 New Bounties Listing!\n\n`;
+        let bountyMessage = bounties.length === 1 ? '' : `🚨 New Listing(s) Added on Earn!\n\n`;
 
         bounties.forEach(x => {
             x.skills.forEach(sk => {
@@ -64,7 +65,7 @@ client.once('ready', async () => {
             const link = `https://earn.superteam.fun/listings/bounties/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`
             const modifiedLink = bounties.length === 1 ? link : `<${link}>`
 
-            bountyMessage += `${emoji} ${x.title} (\$${x.rewardAmount})\n\n🔗 ${modifiedLink}\n\n`
+            bountyMessage += `${emoji} ${x.title} (${x.token === "USDC"?'$':''}${x.rewardAmount.toLocaleString()}${x.token !== "USDC"?` ${x.token}`:""})\n\n🔗 ${modifiedLink}\n\n`
         })
 
         const rolesArray = Array.from(roles)
@@ -73,6 +74,7 @@ client.once('ready', async () => {
             const guild = client.guilds.cache.get(server.id)
             if (guild) {
                 server.coreRoles.forEach((role) => {
+                    if(rolesArray.length !== 0 && role.name === "Member") return
                     bountyMessage += `${role.id} `
                 })
                 
