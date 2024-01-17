@@ -1,3 +1,8 @@
+export interface CoreRoles {
+    name: "Member" | "Lurker" | "Contributor";
+    id: string;
+}
+
 export interface Roles {
     name: string;
     id: string;
@@ -7,7 +12,7 @@ export interface Servers {
     name: string;
     id: string;
     earn: string;
-    coreRoles: Roles[];
+    coreRoles: CoreRoles[];
     roles: Roles[];
 }
 

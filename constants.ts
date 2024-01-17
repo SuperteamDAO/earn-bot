@@ -93,6 +93,10 @@ export const servers: Servers[] = [
         earn: "1183741053883404388",
         coreRoles: [
             {
+                id: "<@&1112051655752564774>",
+                name: "Member",
+            },
+            {
                 id: "<@&1112051655752564775>",
                 name: "Lurker",
             },
@@ -125,6 +129,10 @@ export const servers: Servers[] = [
                 id: "<@&1132925104230240358>",
                 name: "Member",
             },
+            {
+                id: "<@&1132925104230240357>",
+                name: "Lurker"
+            }
         ],
         roles: [
             {
@@ -156,7 +164,7 @@ export const servers: Servers[] = [
             },
             {
                 id: "<@&1035139094520541265>",
-                name: "Learner"
+                name: "Lurker"
             }
         ],
         roles: [
@@ -257,7 +265,7 @@ export const skillsMap: SkillsMapping[] = [
     {
         name: 'Mobile',
         roles: ["Developer"],
-        emoji: "💻"
+        emoji: "📱"
     },
     {
         name: 'Design',

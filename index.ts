@@ -40,11 +40,11 @@ const getRoleFromSkill = (name: string) => {
 client.once('ready', async () => {
     console.log(`⚡ Logged in as ${client.user.username}`);
 
-    const cronTime = '*/5 * * * * *'
-    // const cronTime = '0 */12 * * *'
+    // const cronTime = '*/5 * * * * *'
+    const cronTime = '0 */12 * * *'
     cron.schedule(cronTime, async () => {
         const connection = await mysql.createConnection(dbConfig);
-        const [rows] = await connection.execute(`SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND hackathonprize=0 AND isArchived=0 AND status='OPEN' AND createdAt BETWEEN NOW() - INTERVAL 12 HOUR AND NOW()`);
+        const [rows] = await connection.execute(`SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND status='OPEN' AND createdAt BETWEEN NOW() - INTERVAL 12 HOUR AND NOW()`);
         const bounties: Bounties[] = rows as Bounties[];
 
         if (bounties.length === 0) return;
