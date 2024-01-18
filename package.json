@@ -4,6 +4,7 @@
   "description": "Superteams Earn bot used to notify new lisitngs",
   "main": "index.js",
   "scripts": {
+    "build": "npx tsc",
     "start": "npx tsc & node dist/index.js"
   },
   "author": "Revtpark",
