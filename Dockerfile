@@ -1,9 +1,13 @@
 FROM node:20
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
-WORKDIR /home/node/app
+RUN mkdir earn-bot
+WORKDIR earn-bot/
+ENV DISCORD_TOKEN="bot-token"
+ENV DB_HOST="db-host"
+ENV DB_USER="db-user"
+ENV DB_PASS="db-pass"
+ENV DB_NAME="db-name"
 COPY package*.json ./
-USER node
 RUN npm install
-COPY --chown=node:node . .
+COPY . .
 RUN npm run build
 CMD [ "node", "dist/index.js" ]
