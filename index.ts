@@ -40,11 +40,34 @@ const getRoleFromSkill = (name: string) => {
 client.once('ready', async () => {
     console.log(`⚡ Logged in as ${client.user.username}`);
 
-    // const cronTime = '*/5 * * * * *'
-    const cronTime = '0 */12 * * *'
+    // time should be in the format "Xs" | "XM" | "XH" | "Xd
+    const time = "12H";
+    let cronTime: string;
+    let sqlInterval: string;
+
+    if (time.endsWith('s')) {
+        const seconds = parseInt(time);
+        cronTime = `*/${seconds} * * * *`;
+        sqlInterval = `INTERVAL ${seconds} SECOND`;
+    } else if (time.endsWith('M')) {
+        const minutes = parseInt(time);
+        cronTime = `*/${minutes} * * * *`;
+        sqlInterval = `INTERVAL ${minutes} MINUTE`;
+    } else if (time.endsWith('H')) {
+        const hours = parseInt(time);
+        cronTime = `0 */${hours} * * *`;
+        sqlInterval = `INTERVAL ${hours} HOUR`;
+    } else if (time.endsWith('d')) {
+        const days = parseInt(time);
+        cronTime = `0 0 */${days} * *`;
+        sqlInterval = `INTERVAL ${days} DAY`;
+    } else {
+        throw new Error('Invalid time format');
+    }
+
     cron.schedule(cronTime, async () => {
         const connection = await mysql.createConnection(dbConfig);
-        const [rows] = await connection.execute(`SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND status='OPEN' AND createdAt BETWEEN NOW() - INTERVAL 12 HOUR AND NOW()`);
+        const [rows] = await connection.execute(`SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND status='OPEN' AND createdAt BETWEEN NOW() - ${sqlInterval} AND NOW()`);
         const bounties: Bounties[] = rows as Bounties[];
 
         if (bounties.length === 0) return;
