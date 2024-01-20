@@ -16,32 +16,32 @@ const dbConfig = {
     ssl: {
         rejectUnauthorized: true,
     },
-}
+};
 
 const getEmoji = (skill: Skills) => {
-    const getSkill = skillsMap.find(x => x.name === skill.skills)
-    if(getSkill){
-        if(getSkill.name === "Content"){
-            if(skill.subskills.includes("Video")){
-                return '🎥'
+    const getSkill = skillsMap.find((x) => x.name === skill.skills);
+    if (getSkill) {
+        if (getSkill.name === 'Content') {
+            if (skill.subskills.includes('Video')) {
+                return '🎥';
             }
-            return '✍️'
+            return '✍️';
         }
-        return getSkill.emoji
+        return getSkill.emoji;
     }
-    return '🤖'
-}
+    return '🤖';
+};
 
 const getRoleFromSkill = (name: string) => {
-    const skill = skillsMap.find(x => x.name === name)
-    if (skill) return skill.roles
-}
+    const skill = skillsMap.find((x) => x.name === name);
+    if (skill) return skill.roles;
+};
 
 client.once('ready', async () => {
     console.log(`⚡ Logged in as ${client.user.username}`);
 
     // time should be in the format "Xs" | "XM" | "XH" | "Xd
-    const time = "12H";
+    const time = '12H';
     let cronTime: string;
     let sqlInterval: string;
 
@@ -67,56 +67,58 @@ client.once('ready', async () => {
 
     cron.schedule(cronTime, async () => {
         const connection = await mysql.createConnection(dbConfig);
-        const [rows] = await connection.execute(`SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND status='OPEN' AND createdAt BETWEEN NOW() - ${sqlInterval} AND NOW()`);
+        const [rows] = await connection.execute(
+            `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND status='OPEN' AND createdAt BETWEEN NOW() - ${sqlInterval} AND NOW()`,
+        );
         const bounties: Bounties[] = rows as Bounties[];
 
         if (bounties.length === 0) return;
-        let roles: Set<string> = new Set();
+        const roles: Set<string> = new Set();
         let bountyMessage = bounties.length === 1 ? '' : `🚨 New Listing(s) Added on Earn!\n\n`;
 
-        bounties.forEach(x => {
-            x.skills.forEach(sk => {
-                const skillRoles = getRoleFromSkill(sk.skills)
+        bounties.forEach((x) => {
+            x.skills.forEach((sk) => {
+                const skillRoles = getRoleFromSkill(sk.skills);
                 if (skillRoles !== null) {
-                    skillRoles.forEach(role => {
-                        roles.add(role)
-                    })
+                    skillRoles.forEach((role) => {
+                        roles.add(role);
+                    });
                 }
-            })
-            const emoji = getEmoji(x.skills[0])
+            });
+            const emoji = getEmoji(x.skills[0]);
 
-            const link = `https://earn.superteam.fun/listings/bounties/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`
-            const modifiedLink = bounties.length === 1 ? link : `<${link}>`
+            const link = `https://earn.superteam.fun/listings/bounties/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
+            const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
 
-            bountyMessage += `${emoji} ${x.title} (${x.token === "USDC"?'$':''}${x.rewardAmount.toLocaleString()}${x.token !== "USDC"?` ${x.token}`:""})\n\n🔗 ${modifiedLink}\n\n`
-        })
+            bountyMessage += `${emoji} ${x.title} (${x.token === 'USDC' ? '$' : ''}${x.rewardAmount.toLocaleString()}${x.token !== 'USDC' ? ` ${x.token}` : ''})\n\n🔗 ${modifiedLink}\n\n`;
+        });
 
-        const rolesArray = Array.from(roles)
+        const rolesArray = Array.from(roles);
 
         servers.map((server) => {
-            const guild = client.guilds.cache.get(server.id)
+            const guild = client.guilds.cache.get(server.id);
             if (guild) {
                 server.coreRoles.forEach((role) => {
-                    if(rolesArray.length !== 0 && role.name === "Member") return
-                    bountyMessage += `${role.id} `
-                })
-                
-                let rolesAdded = new Set();
+                    if (rolesArray.length !== 0 && role.name === 'Member') return;
+                    bountyMessage += `${role.id} `;
+                });
+
+                const rolesAdded = new Set();
                 rolesArray.forEach((role) => {
-                    const guildRole = server.roles.find(x => x.name === role)
+                    const guildRole = server.roles.find((x) => x.name === role);
                     // Added check to prevent duplicate roles tag
                     if (guildRole && !rolesAdded.has(guildRole.id)) {
-                        rolesAdded.add(guildRole.id)
-                        bountyMessage += `${guildRole.id} `
+                        rolesAdded.add(guildRole.id);
+                        bountyMessage += `${guildRole.id} `;
                     }
-                })
-                const channel = guild.channels.cache.get(server.earn)
+                });
+                const channel = guild.channels.cache.get(server.earn);
                 if (channel && channel.isTextBased()) {
-                    channel.send(bountyMessage)
+                    channel.send(bountyMessage);
                 }
             }
-        })
-    })
+        });
+    });
 });
 
 client.login(process.env.DISCORD_TOKEN);
