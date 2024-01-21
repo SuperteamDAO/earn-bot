@@ -29,14 +29,14 @@ const getCronAndSqlInterval = (time: string): [string, string] => {
     const unit = time.slice(-1);
     const value = parseInt(time);
     const cronUnit = TIME_UNITS[unit];
-    
+
     if (!cronUnit) {
         throw new Error('Invalid time format');
     }
 
     const cronTime = unit === 's' ? `*/${value} * * * *` : unit === 'd' ? `0 0 */${value} * *` : `0 */${value} * * *`;
     const sqlInterval = `INTERVAL ${value} ${cronUnit}`;
-    
+
     return [cronTime, sqlInterval];
 };
 
