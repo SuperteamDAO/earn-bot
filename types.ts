@@ -58,6 +58,7 @@ export interface Bounties {
     timeToComplete: any;
     references: any;
     winners: any;
+    publishedAt: string;
 }
 
 export interface Skills {
