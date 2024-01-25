@@ -59,6 +59,7 @@ export interface Bounties {
     references: any;
     winners: any;
     publishedAt: string;
+    isPrivate: boolean;
 }
 
 export interface Skills {

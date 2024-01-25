@@ -68,7 +68,7 @@ client.once('ready', async () => {
     cron.schedule(cronTime, async () => {
         const connection = await mysql.createConnection(dbConfig);
         const [rows] = await connection.execute(
-            `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND status='OPEN' AND publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW()`,
+            `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND isPrivate=0 AND status='OPEN' AND publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW()`,
         );
         const bounties: Bounties[] = rows as Bounties[];
 
