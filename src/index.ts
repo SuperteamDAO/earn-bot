@@ -37,33 +37,34 @@ const getRoleFromSkill = (name: string) => {
     if (skill) return skill.roles;
 };
 
+const TIME_UNITS = {
+    's': 'SECOND',
+    'M': 'MINUTE',
+    'H': 'HOUR',
+    'd': 'DAY',
+};
+
+const getCronAndSqlInterval = (time: string): [string, string] => {
+    const unit = time.slice(-1);
+    const value = parseInt(time);
+    const cronUnit = TIME_UNITS[unit];
+
+    if (!cronUnit) {
+        throw new Error('Invalid time format');
+    }
+
+    const cronTime = unit === "d" ? `0 0 */${value} * *` : unit === "H" ? `0 */${value} * * *` : unit === "s" ? `*/${value} * * * *` : `*/${value} * * * * *`;
+    const sqlInterval = `INTERVAL ${value} ${cronUnit}`;
+
+    return [cronTime, sqlInterval];
+};
+
 client.once('ready', async () => {
     console.log(`⚡ Logged in as ${client.user.username}`);
 
     // time should be in the format "Xs" | "XM" | "XH" | "Xd
     const time = '12H';
-    let cronTime: string;
-    let sqlInterval: string;
-
-    if (time.endsWith('s')) {
-        const seconds = parseInt(time);
-        cronTime = `*/${seconds} * * * *`;
-        sqlInterval = `INTERVAL ${seconds} SECOND`;
-    } else if (time.endsWith('M')) {
-        const minutes = parseInt(time);
-        cronTime = `*/${minutes} * * * *`;
-        sqlInterval = `INTERVAL ${minutes} MINUTE`;
-    } else if (time.endsWith('H')) {
-        const hours = parseInt(time);
-        cronTime = `0 */${hours} * * *`;
-        sqlInterval = `INTERVAL ${hours} HOUR`;
-    } else if (time.endsWith('d')) {
-        const days = parseInt(time);
-        cronTime = `0 0 */${days} * *`;
-        sqlInterval = `INTERVAL ${days} DAY`;
-    } else {
-        throw new Error('Invalid time format');
-    }
+    const [cronTime, sqlInterval] = getCronAndSqlInterval(time);
 
     cron.schedule(cronTime, async () => {
         const connection = await mysql.createConnection(dbConfig);
