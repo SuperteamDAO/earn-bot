@@ -87,7 +87,7 @@ client.once('ready', async () => {
             });
             const emoji = getEmoji(x.skills[0]);
 
-            const link = `https://earn.superteam.fun/listings/bounties/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
+            const link = `https://earn.superteam.fun/listings/${x.type}/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
             const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
 
             bountyMessage += `${emoji} ${x.title} (${x.token === 'USDC' ? '$' : ''}${x.rewardAmount.toLocaleString()}${x.token !== 'USDC' ? ` ${x.token}` : ''})\n\n🔗 ${modifiedLink}\n\n`;
