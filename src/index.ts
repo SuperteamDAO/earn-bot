@@ -96,11 +96,12 @@ client.once('ready', async () => {
         const rolesArray = Array.from(roles);
 
         servers.map((server) => {
+            let sendMessage = bountyMessage;
             const guild = client.guilds.cache.get(server.id);
             if (guild) {
                 server.coreRoles.forEach((role) => {
                     if (rolesArray.length !== 0 && role.name === 'Member') return;
-                    bountyMessage += `${role.id} `;
+                    sendMessage += `${role.id} `;
                 });
 
                 const rolesAdded = new Set();
@@ -109,12 +110,12 @@ client.once('ready', async () => {
                     // Added check to prevent duplicate roles tag
                     if (guildRole && !rolesAdded.has(guildRole.id)) {
                         rolesAdded.add(guildRole.id);
-                        bountyMessage += `${guildRole.id} `;
+                        sendMessage += `${guildRole.id} `;
                     }
                 });
                 const channel = guild.channels.cache.get(server.earn);
                 if (channel && channel.isTextBased()) {
-                    channel.send(bountyMessage);
+                    channel.send(sendMessage);
                 }
             }
         });
