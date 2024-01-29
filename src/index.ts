@@ -119,7 +119,7 @@ client.once('ready', async () => {
                 }
             }
         });
-    });
+    }, { timezone: "Asia/Kolkata" });
 });
 
 client.login(process.env.DISCORD_TOKEN);
