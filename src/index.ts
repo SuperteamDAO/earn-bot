@@ -45,7 +45,7 @@ client.once('ready', async () => {
     console.log(dayOfWeek)
 
     const cronTime = "0 0 * * 2,5";
-    const sqlInterval = `INTERVAL ${dayOfWeek === 2 ? 3 : 2} DAY`;
+    const sqlInterval = `INTERVAL ${dayOfWeek === 2 ? 4 : 3} DAY`;
 
     cron.schedule(cronTime, async () => {
         const connection = await mysql.createConnection(dbConfig);
