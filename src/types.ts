@@ -14,6 +14,7 @@ export interface Servers {
     earn: string;
     coreRoles: CoreRoles[];
     roles: Roles[];
+    region: Regions;
 }
 
 export interface SkillsMapping {
@@ -51,7 +52,7 @@ export interface Bounties {
     totalWinnersSelected: number;
     isWinnersAnnounced: number;
     templateId: string;
-    region: string;
+    region: Regions;
     pocSocials: any;
     hackathonprize: number;
     applicationType: string;
@@ -60,6 +61,23 @@ export interface Bounties {
     winners: any;
     publishedAt: string;
     isPrivate: boolean;
+}
+
+export enum Regions {
+    GLOBAL,
+    INDIA,
+    VIETNAM,
+    GERMANY,
+    TURKEY,
+    MEXICO,
+    UK,
+    UAE,
+    NIGERIA,
+    ISRAEL,
+    BRAZIL,
+    MALAYSIA,
+    BALKANS,
+    PHILIPPINES,
 }
 
 export interface Skills {

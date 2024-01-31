@@ -2,7 +2,7 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import * as dotenv from 'dotenv';
 import * as mysql from 'mysql2/promise';
 import cron from 'node-cron';
-import { Bounties, Skills } from './types';
+import { Bounties, Regions, Skills } from './types';
 import { servers, skillsMap } from './constants';
 
 dotenv.config();
@@ -42,7 +42,6 @@ client.once('ready', async () => {
 
     const today = new Date();
     const dayOfWeek = today.getDay();
-    console.log(dayOfWeek)
 
     const cronTime = "0 0 * * 2,5";
     const sqlInterval = `INTERVAL ${dayOfWeek === 2 ? 4 : 3} DAY`;
@@ -53,32 +52,32 @@ client.once('ready', async () => {
             `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND isPrivate=0 AND status='OPEN' AND publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW()`,
         );
         const bounties: Bounties[] = rows as Bounties[];
-        console.log(bounties.length)
 
         if (bounties.length === 0) return;
         const roles: Set<string> = new Set();
-        let bountyMessage = bounties.length === 1 ? '' : `🚨 New Listing(s) Added on Earn!\n\n`;
-
-        bounties.forEach((x) => {
-            x.skills.forEach((sk) => {
-                const skillRoles = getRoleFromSkill(sk.skills);
-                if (skillRoles !== null) {
-                    skillRoles.forEach((role) => {
-                        roles.add(role);
-                    });
-                }
-            });
-            const emoji = getEmoji(x.skills[0]);
-
-            const link = `https://earn.superteam.fun/listings/bounties/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
-            const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
-
-            bountyMessage += `${emoji} ${x.title} (${x.token === 'USDC' ? '$' : ''}${x.rewardAmount.toLocaleString()}${x.token !== 'USDC' ? ` ${x.token}` : ''})\n🔗 ${modifiedLink}\n\n`;
-        });
-
-        const rolesArray = Array.from(roles);
 
         servers.map((server) => {
+            let bountyMessage = bounties.length === 1 ? '' : `🚨 New Listing(s) Added on Earn!\n\n`;
+
+            bounties.forEach((x) => {
+                if(x.region !== Regions.GLOBAL && x.region !== server.region) return;
+                x.skills.forEach((sk) => {
+                    const skillRoles = getRoleFromSkill(sk.skills);
+                    if (skillRoles !== null) {
+                        skillRoles.forEach((role) => {
+                            roles.add(role);
+                        });
+                    }
+                });
+                const emoji = getEmoji(x.skills[0]);
+
+                const link = `https://earn.superteam.fun/listings/bounties/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
+                const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
+
+                bountyMessage += `${emoji} ${x.title} (${x.token === 'USDC' ? '$' : ''}${x.rewardAmount.toLocaleString()}${x.token !== 'USDC' ? ` ${x.token}` : ''})\n🔗 ${modifiedLink}\n\n`;
+            });
+
+            const rolesArray = Array.from(roles);
             let sendMessage = bountyMessage;
             const guild = client.guilds.cache.get(server.id);
             if (guild) {
@@ -102,6 +101,7 @@ client.once('ready', async () => {
                 }
             }
         });
+
     }, {});
 });
 
