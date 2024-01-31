@@ -7,7 +7,7 @@
         "build": "npx tsc",
         "start": "npx tsc & node dist/index.js",
         "lint": "eslint . --ext .ts",
-        "format": "prettier --write \"*.ts\""
+        "format": "prettier --write \"src\\*.ts\""
     },
     "author": "Revtpark",
     "license": "ISC",

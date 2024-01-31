@@ -59,7 +59,8 @@ client.once('ready', async () => {
             const roles: Set<string> = new Set();
 
             servers.map((server) => {
-                let bountyMessage = bounties.length === 1 ? '' : `🚨 New Listing(s) Added on Earn!\n\n`;
+                let parts = 0;
+                const bountyMessages: string[] = [''];
 
                 bounties.forEach((x) => {
                     if (x.region !== Regions.GLOBAL && x.region !== server.region) return;
@@ -76,31 +77,52 @@ client.once('ready', async () => {
                     const link = `https://earn.superteam.fun/listings/${x.type}/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
                     const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
 
-                    bountyMessage += `${emoji} ${x.title} (${x.token === 'USDC' ? '$' : ''}${x.rewardAmount.toLocaleString()}${x.token !== 'USDC' ? ` ${x.token}` : ''})\n🔗 ${modifiedLink}\n\n`;
+                    const message = `${emoji} ${x.title} (${x.token === 'USDC' ? '$' : ''}${x.rewardAmount.toLocaleString()}${x.token !== 'USDC' ? ` ${x.token}` : ''})\n🔗 ${modifiedLink}\n\n`;
+                    // breakdown: current message length + new message length + 42 (for the intro) + 170 (for the roles) and 2000 the max length of a discord message
+                    if (bountyMessages[parts].length + message.length + 42 + 170 > 2000) {
+                        bountyMessages[parts] =
+                            `🚨 New Listing(s) Added on Earn!(Part ${parts + 1})\n\n${bountyMessages[parts]}`;
+                        parts += 1;
+                        bountyMessages.push(message);
+                    } else {
+                        bountyMessages[parts] += message;
+                    }
                 });
 
+                if(bountyMessages.length === 1 && bountyMessages[0] === '') return;
+                if (bounties.length !== 1)
+                    bountyMessages[parts] =
+                        `🚨 New Listing(s) Added on Earn!${parts === 0 ? '' : `(Part ${parts + 1})`}\n\n${bountyMessages[parts]}`;
+     
                 const rolesArray = Array.from(roles);
-                let sendMessage = bountyMessage;
                 const guild = client.guilds.cache.get(server.id);
                 if (guild) {
-                    server.coreRoles.forEach((role) => {
-                        if (rolesArray.length !== 0 && role.name === 'Member') return;
-                        sendMessage += `${role.id} `;
-                    });
+                    bountyMessages.forEach((message, index) => {
+                        const channel = guild.channels.cache.get(server.earn);
+                        if (channel && channel.isTextBased()) {
+                            let sendMessage = message;
+                            if (bountyMessages.length === 1 || bountyMessages.length - 1 === index) {
+                                server.coreRoles.forEach((role) => {
+                                    if (rolesArray.length !== 0 && role.name === 'Member') return;
+                                    sendMessage += `${role.id} `;
+                                });
 
-                    const rolesAdded = new Set();
-                    rolesArray.forEach((role) => {
-                        const guildRole = server.roles.find((x) => x.name === role);
-                        // Added check to prevent duplicate roles tag
-                        if (guildRole && !rolesAdded.has(guildRole.id)) {
-                            rolesAdded.add(guildRole.id);
-                            sendMessage += `${guildRole.id} `;
+                                const rolesAdded = new Set();
+                                rolesArray.forEach((role) => {
+                                    const guildRole = server.roles.find((x) => x.name === role);
+                                    // Added check to prevent duplicate roles tag
+                                    if (guildRole && !rolesAdded.has(guildRole.id)) {
+                                        rolesAdded.add(guildRole.id);
+                                        sendMessage += `${guildRole.id} `;
+                                    }
+                                });
+
+                                channel.send(sendMessage);
+                            } else {
+                                channel.send(sendMessage);
+                            }
                         }
                     });
-                    const channel = guild.channels.cache.get(server.earn);
-                    if (channel && channel.isTextBased()) {
-                        channel.send(sendMessage);
-                    }
                 }
             });
         },
