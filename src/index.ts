@@ -40,30 +40,12 @@ const getRoleFromSkill = (name: string) => {
 client.once('ready', async () => {
     console.log(`⚡ Logged in as ${client.user.username}`);
 
-    // time should be in the format "Xs" | "XM" | "XH" | "Xd
-    const time = '12H';
-    let cronTime: string;
-    let sqlInterval: string;
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    console.log(dayOfWeek)
 
-    if (time.endsWith('s')) {
-        const seconds = parseInt(time);
-        cronTime = `*/${seconds} * * * *`;
-        sqlInterval = `INTERVAL ${seconds} SECOND`;
-    } else if (time.endsWith('M')) {
-        const minutes = parseInt(time);
-        cronTime = `*/${minutes} * * * *`;
-        sqlInterval = `INTERVAL ${minutes} MINUTE`;
-    } else if (time.endsWith('H')) {
-        const hours = parseInt(time);
-        cronTime = `0 */${hours} * * *`;
-        sqlInterval = `INTERVAL ${hours} HOUR`;
-    } else if (time.endsWith('d')) {
-        const days = parseInt(time);
-        cronTime = `0 0 */${days} * *`;
-        sqlInterval = `INTERVAL ${days} DAY`;
-    } else {
-        throw new Error('Invalid time format');
-    }
+    const cronTime = "0 0 * * 2,5";
+    const sqlInterval = `INTERVAL ${dayOfWeek === 2 ? 3 : 2} DAY`;
 
     cron.schedule(cronTime, async () => {
         const connection = await mysql.createConnection(dbConfig);
@@ -71,6 +53,7 @@ client.once('ready', async () => {
             `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND isPrivate=0 AND status='OPEN' AND publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW()`,
         );
         const bounties: Bounties[] = rows as Bounties[];
+        console.log(bounties.length)
 
         if (bounties.length === 0) return;
         const roles: Set<string> = new Set();
@@ -119,7 +102,7 @@ client.once('ready', async () => {
                 }
             }
         });
-    }, { timezone: "Asia/Kolkata" });
+    }, {});
 });
 
 client.login(process.env.DISCORD_TOKEN);
