@@ -1,9 +1,10 @@
-import { Servers, SkillsMapping } from './types';
+import { Regions, Servers, SkillsMapping } from './types';
 
 export const servers: Servers[] = [
     {
         id: '1194951648787828746',
         name: 'Test Server',
+        region: Regions.GLOBAL,
         earn: '1195326162126254171',
         coreRoles: [
             {
@@ -37,6 +38,7 @@ export const servers: Servers[] = [
     {
         id: '857091160295866388',
         name: 'Superteam India',
+        region: Regions.INDIA,
         earn: '863987156405977129',
         coreRoles: [
             {
@@ -74,6 +76,7 @@ export const servers: Servers[] = [
     {
         id: '1030133683220402348',
         name: 'Superteam Vietnam',
+        region: Regions.VIETNAM,
         earn: '1030144854702960753',
         coreRoles: [
             {
@@ -90,6 +93,7 @@ export const servers: Servers[] = [
     {
         id: '1112051655752564766',
         name: 'Superteam UK',
+        region: Regions.UK,
         earn: '1183741053883404388',
         coreRoles: [
             {
@@ -123,6 +127,7 @@ export const servers: Servers[] = [
     {
         id: '1132925103798222981',
         earn: '1132925104691626042',
+        region: Regions.BRAZIL,
         name: 'Superteam Brazil',
         coreRoles: [
             {
@@ -156,6 +161,7 @@ export const servers: Servers[] = [
     {
         id: '1034811886996299877',
         name: 'Superteam Germany',
+        region: Regions.GERMANY,
         earn: '1035608071768113212',
         coreRoles: [
             {
@@ -189,6 +195,7 @@ export const servers: Servers[] = [
     {
         id: '1138049053595283536',
         name: 'Superteam Nigeria',
+        region: Regions.NIGERIA,
         earn: '1138049054979403868',
         coreRoles: [
             {
@@ -218,6 +225,7 @@ export const servers: Servers[] = [
     {
         id: '1127152143720255508',
         name: 'Superteam UAE',
+        region: Regions.UAE,
         earn: '1127152144408137737',
         coreRoles: [
             {
