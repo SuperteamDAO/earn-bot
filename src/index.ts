@@ -43,7 +43,8 @@ client.once('ready', async () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
 
-    const cronTime = '0 0 * * 2,5';
+    // const cronTime = '0 0 * * 2,5';
+    const cronTime = '*/5 * * * * *';
     const sqlInterval = `INTERVAL ${dayOfWeek === 2 ? 4 : 3} DAY`;
 
     cron.schedule(
@@ -51,7 +52,7 @@ client.once('ready', async () => {
         async () => {
             const connection = await mysql.createConnection(dbConfig);
             const [rows] = await connection.execute(
-                `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND isPrivate=0 AND status='OPEN' AND publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW()`,
+                `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND isPrivate=0 AND status='OPEN' AND publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW() AND (hackathonId IS NULL OR hackathonId = '')`,
             );
             const bounties: Bounties[] = rows as Bounties[];
 
@@ -74,7 +75,7 @@ client.once('ready', async () => {
                     });
                     const emoji = getEmoji(x.skills[0]);
 
-                    const link = `https://earn.superteam.fun/listings/bounties/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
+                    const link = `https://earn.superteam.fun/listings/${x.type}/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
                     const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
 
                     const message = `${emoji} ${x.title} (${x.token === 'USDC' ? '$' : ''}${x.rewardAmount.toLocaleString()}${x.token !== 'USDC' ? ` ${x.token}` : ''})\n🔗 ${modifiedLink}\n\n`;
@@ -89,10 +90,11 @@ client.once('ready', async () => {
                     }
                 });
 
+                if(bountyMessages.length === 1 && bountyMessages[0] === '') return;
                 if (bounties.length !== 1)
                     bountyMessages[parts] =
                         `🚨 New Listing(s) Added on Earn!${parts === 0 ? '' : `(Part ${parts + 1})`}\n\n${bountyMessages[parts]}`;
-
+     
                 const rolesArray = Array.from(roles);
                 const guild = client.guilds.cache.get(server.id);
                 if (guild) {
