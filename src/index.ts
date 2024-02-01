@@ -78,10 +78,10 @@ client.once('ready', async () => {
                     const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
 
                     const message = `${emoji} ${x.title} (${x.token === 'USDC' ? '$' : ''}${x.rewardAmount.toLocaleString()}${x.token !== 'USDC' ? ` ${x.token}` : ''})\n🔗 ${modifiedLink}\n\n`;
-                    // breakdown: current message length + new message length + 42 (for the intro) + 170 (for the roles) and 2000 the max length of a discord message
-                    if (bountyMessages[parts].length + message.length + 42 + 170 > 2000) {
+                    // breakdown: current message length + new message length + 43 (for the intro) + 170 (for the roles) and 2000 the max length of a discord message
+                    if (bountyMessages[parts].length + message.length + 43 + 170 > 2000) {
                         bountyMessages[parts] =
-                            `🚨 New Listing(s) Added on Earn!(Part ${parts + 1})\n\n${bountyMessages[parts]}`;
+                            `🚨 New Listing(s) Added on Earn! (Part ${parts + 1})\n\n${bountyMessages[parts]}`;
                         parts += 1;
                         bountyMessages.push(message);
                     } else {
@@ -92,7 +92,7 @@ client.once('ready', async () => {
                 if(bountyMessages.length === 1 && bountyMessages[0] === '') return;
                 if (bounties.length !== 1)
                     bountyMessages[parts] =
-                        `🚨 New Listing(s) Added on Earn!${parts === 0 ? '' : `(Part ${parts + 1})`}\n\n${bountyMessages[parts]}`;
+                        `🚨 New Listing(s) Added on Earn!${parts === 0 ? '' : ` (Part ${parts + 1})`}\n\n${bountyMessages[parts]}`;
      
                 const rolesArray = Array.from(roles);
                 const guild = client.guilds.cache.get(server.id);
