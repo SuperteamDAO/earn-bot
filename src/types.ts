@@ -64,20 +64,20 @@ export interface Bounties {
 }
 
 export enum Regions {
-    GLOBAL,
-    INDIA,
-    VIETNAM,
-    GERMANY,
-    TURKEY,
-    MEXICO,
-    UK,
-    UAE,
-    NIGERIA,
-    ISRAEL,
-    BRAZIL,
-    MALAYSIA,
-    BALKANS,
-    PHILIPPINES,
+    GLOBAL="GLOBAL",
+    INDIA="INDIA",
+    VIETNAM="VIETNAM",
+    GERMANY="GERMANY",
+    TURKEY="TURKEY",
+    MEXICO="MEXICO",
+    UK="UK",
+    UAE="UAE",
+    NIGERIA="NIGERIA",
+    ISRAEL="ISRAEL",
+    BRAZIL="BRAZIL",
+    MALAYSIA="MALAYSIA",
+    BALKANS="BALKANS",
+    PHILIPPINES="PHILIPPINES",
 }
 
 export interface Skills {
