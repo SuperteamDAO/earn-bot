@@ -43,8 +43,8 @@ client.once('ready', async () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
 
-    const cronTime = '0 0 * * 2,5';
-    const sqlInterval = `INTERVAL ${dayOfWeek === 2 ? 4 : 3} DAY`;
+    const cronTime = '0 0 * * 2,6';
+    const sqlInterval = `INTERVAL ${dayOfWeek === 2 ? 4 : 4} DAY`;
 
     cron.schedule(
         cronTime,
