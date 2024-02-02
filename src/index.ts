@@ -49,11 +49,13 @@ client.once('ready', async () => {
     cron.schedule(
         cronTime,
         async () => {
+            console.log("🔥 Running cron")
             const connection = await mysql.createConnection(dbConfig);
             const [rows] = await connection.execute(
                 `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND isPrivate=0 AND status='OPEN' AND publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW() AND (hackathonId IS NULL OR hackathonId = '')`,
             );
             const bounties: Bounties[] = rows as Bounties[];
+            console.log(`🚨 Bounties found ${bounties.length}`)
 
             if (bounties.length === 0) return;
             const roles: Set<string> = new Set();
@@ -121,6 +123,7 @@ client.once('ready', async () => {
                             } else {
                                 channel.send(sendMessage);
                             }
+                            console.log(`📤 Message sent to ${server.name}`)
                         }
                     });
                 }
