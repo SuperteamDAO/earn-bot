@@ -4,7 +4,7 @@ export const servers: Servers[] = [
     {
         id: '1194951648787828746',
         name: 'Test Server',
-        region: Regions.GLOBAL,
+        region: Regions.INDIA,
         earn: '1195326162126254171',
         coreRoles: [
             {
