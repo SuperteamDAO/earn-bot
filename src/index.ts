@@ -43,7 +43,8 @@ client.once('ready', async () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
 
-    const cronTime = '0 12 * * 2,5';
+    // const cronTime = '0 12 * * 2,5';
+    const cronTime = '*/5 * * * * *';
     const sqlInterval = `INTERVAL ${dayOfWeek === 2 ? 4 : 3} DAY`;
 
     cron.schedule(
@@ -52,7 +53,7 @@ client.once('ready', async () => {
             console.log("🔥 Running cron")
             const connection = await mysql.createConnection(dbConfig);
             const [rows] = await connection.execute(
-                `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND isPrivate=0 AND status='OPEN' AND publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW() AND (hackathonId IS NULL OR hackathonId = '')`,
+                `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND isPrivate=0 AND status='OPEN' AND isWinnersAnnounced=0 AND publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW() AND (hackathonId IS NULL OR hackathonId = '')`,
             );
             const bounties: Bounties[] = rows as Bounties[];
             console.log(`🚨 Bounties found ${bounties.length}`)
@@ -65,6 +66,8 @@ client.once('ready', async () => {
                 const bountyMessages: string[] = [''];
 
                 bounties.forEach((x) => {
+                    console.log(x.region !== Regions.GLOBAL && x.region !== server.region)
+                    console.log(x.region, server.region, x.region !== server.region);
                     if (x.region !== Regions.GLOBAL && x.region !== server.region) return;
                     x.skills.forEach((sk) => {
                         const skillRoles = getRoleFromSkill(sk.skills);
