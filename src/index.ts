@@ -43,8 +43,7 @@ client.once('ready', async () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
 
-    // const cronTime = '0 12 * * 2,5';
-    const cronTime = '*/5 * * * * *';
+    const cronTime = '0 12 * * 2,5';
     const sqlInterval = `INTERVAL ${dayOfWeek === 2 ? 4 : 3} DAY`;
 
     cron.schedule(
@@ -66,8 +65,6 @@ client.once('ready', async () => {
                 const bountyMessages: string[] = [''];
 
                 bounties.forEach((x) => {
-                    console.log(x.region !== Regions.GLOBAL && x.region !== server.region)
-                    console.log(x.region, server.region, x.region !== server.region);
                     if (x.region !== Regions.GLOBAL && x.region !== server.region) return;
                     x.skills.forEach((sk) => {
                         const skillRoles = getRoleFromSkill(sk.skills);
