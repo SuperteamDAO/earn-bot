@@ -78,6 +78,7 @@ export enum Regions {
     MALAYSIA="MALAYSIA",
     BALKANS="BALKANS",
     PHILIPPINES="PHILIPPINES",
+    KUMEKA="KUMEKA",
 }
 
 export interface Skills {

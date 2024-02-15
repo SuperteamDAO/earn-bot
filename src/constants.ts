@@ -252,6 +252,172 @@ export const servers: Servers[] = [
             },
         ],
     },
+    {
+        id: '1038020662071148574',
+        name: 'Superteam Turkey',
+        region: Regions.TURKEY,
+        earn: '1038173920613896222',
+        coreRoles: [
+            {
+                id: '<@&1038020662071148576>',
+                name: 'Member',
+            },
+            {
+                id: '<@&1038020662071148575>',
+                name: 'Lurker',
+            },
+        ],
+        roles: [
+            {
+                id: '<@&1067818701136609451>',
+                name: 'Developer',
+            },
+            {
+                id: '<@&1067818615019147284>',
+                name: 'Designer',
+            },
+            {
+                id: '<@&1067818742882500659>',
+                name: 'Writer',
+            },
+        ],
+    },
+    {
+        id: '1198949931243819039',
+        name: 'Superteam Philippines',
+        region: Regions.PHILIPPINES,
+        earn: '1198949931596128296',
+        coreRoles: [
+            {
+                id: '<@&1198949931243819048>',
+                name: 'Member',
+            },
+            {
+                id: '<@&1204478926068650014>',
+                name: 'Contributor',
+            },
+            {
+                id: '<@&1198949931243819047>',
+                name: 'Lurker',
+            },
+        ],
+        roles: [
+            {
+                id: '<@&1198949931243819045>',
+                name: 'Developer',
+            },
+            {
+                id: '<@&1198949931243819045>',
+                name: 'Designer',
+            },
+            {
+                id: '<@&1198949931243819041>',
+                name: 'Writer',
+            },
+        ],
+    },
+    {
+        id: '1194936844152995860',
+        name: 'Superteam Balkans',
+        region: Regions.BALKANS,
+        earn: '1197548503426142389',
+        coreRoles: [
+            {
+                id: '<@&1197621201951006830>',
+                name: 'Member',
+            },
+            {
+                id: '<@&1204573800432410637>',
+                name: 'Contributor',
+            },
+            {
+                id: '<@&1197551323529363557>',
+                name: 'Lurker',
+            },
+        ],
+        roles: [
+            {
+                id: '<@&1199487470773997739>',
+                name: 'Developer',
+            },
+            {
+                id: '<@&1199513033228177478>',
+                name: 'Designer',
+            },
+            {
+                id: '<@&1199512304803381288>',
+                name: 'Writer',
+            },
+        ],
+    },
+    {
+        id: '1198961988391407616',
+        name: 'Superteam Malaysia',
+        region: Regions.MALAYSIA,
+        earn: '1198961988865360011',
+        coreRoles: [
+            {
+                id: '<@&1198961988391407625>',
+                name: 'Member',
+            },
+            {
+                id: '<@&1204366943742599239>',
+                name: 'Contributor',
+            },
+            {
+                id: '<@&1198961988391407624>',
+                name: 'Lurker',
+            },
+        ],
+        roles: [
+            {
+                id: '<@&1198961988391407623>',
+                name: 'Developer',
+            },
+            {
+                id: '<@&1198961988391407622>',
+                name: 'Designer',
+            },
+            {
+                id: '<@&1198961988391407618>',
+                name: 'Writer',
+            },
+        ],
+    },
+    {
+        id: '1162389221911310366',
+        name: 'Superteam Kumeka',
+        region: Regions.KUMEKA,
+        earn: '1166057763428892812',
+        coreRoles: [
+            {
+                id: '<@&1162389221911310369>',
+                name: 'Member',
+            },
+            {
+                id: '<@&1166028086702252113>',
+                name: 'Contributor',
+            },
+            {
+                id: '<@&1162389221911310367>',
+                name: 'Lurker',
+            },
+        ],
+        roles: [
+            {
+                id: '<@&1166023713653784607>',
+                name: 'Developer',
+            },
+            {
+                id: '<@&1166023466185654382>',
+                name: 'Designer',
+            },
+            {
+                id: '<@&1166023837645799544>',
+                name: 'Writer',
+            },
+        ],
+    },
 ];
 
 export const skillsMap: SkillsMapping[] = [
