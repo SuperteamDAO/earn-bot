@@ -40,11 +40,11 @@ const getRoleFromSkill = (name: string) => {
 client.once('ready', async () => {
     console.log(`⚡ Logged in as ${client.user.username}`);
 
-    const today = new Date();
-    const dayOfWeek = today.getDay();
+    // const today = new Date();
+    // const dayOfWeek = today.getDay();
 
-    const cronTime = '0 12 * * 2,5';
-    const sqlInterval = `INTERVAL ${dayOfWeek === 2 ? 4 : 3} DAY`;
+    const cronTime = '0 12 * * 5';
+    const sqlInterval = `INTERVAL 7 DAY`;
 
     cron.schedule(
         cronTime,
