@@ -86,7 +86,7 @@ client.once('ready', async () => {
                             x.compensationType === 'range' ?
                                 `(${formatRewardText(x.minRewardAsk, x.token)} - ${formatRewardText(x.maxRewardAsk, x.token)})` :
                                 x.compensationType === 'variable' ?
-                                    "Variable" :
+                                    "(Variable)" :
                                     "" : "";
                     const message = `${emoji} ${x.title} ${rewardText}\n🔗 ${modifiedLink}\n\n`;
                     // breakdown: current message length + new message length + 43 (for the intro) + 170 (for the roles) and 2000 the max length of a discord message
