@@ -44,7 +44,7 @@ const formatRewardText = (reward: number, token: string) => {
 client.once('ready', async () => {
     console.log(`⚡ Logged in as ${client.user.username}`);
 
-    const cronTime = '*/5 * * * * *';
+    const cronTime = '0 12 * * 5';
     const sqlInterval = `INTERVAL 7 DAY`;
 
     cron.schedule(
