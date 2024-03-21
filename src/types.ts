@@ -32,7 +32,7 @@ export interface Bounties {
     eligibility: any[];
     status: string;
     token: string;
-    rewardAmount: number;
+    rewardAmount: number | null;
     rewards: { first: number };
     sponsorId: string;
     pocId: string;
@@ -61,6 +61,9 @@ export interface Bounties {
     winners: any;
     publishedAt: string;
     isPrivate: boolean;
+    compensationType?: 'fixed' | 'range' | 'variable';
+    minRewardAsk: number;
+    maxRewardAsk: number;
 }
 
 export enum Regions {
