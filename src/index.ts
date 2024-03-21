@@ -37,13 +37,14 @@ const getRoleFromSkill = (name: string) => {
     if (skill) return skill.roles;
 };
 
+const formatRewardText = (reward: number, token: string) => {
+    return `${token === 'USDC' ? '$' : ''}${reward.toLocaleString()}${token !== 'USDC' ? ` ${token}` : ''}`
+}
+
 client.once('ready', async () => {
     console.log(`⚡ Logged in as ${client.user.username}`);
 
-    // const today = new Date();
-    // const dayOfWeek = today.getDay();
-
-    const cronTime = '0 12 * * 5';
+    const cronTime = '*/5 * * * * *';
     const sqlInterval = `INTERVAL 7 DAY`;
 
     cron.schedule(
@@ -79,7 +80,15 @@ client.once('ready', async () => {
                     const link = `https://earn.superteam.fun/listings/${x.type}/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
                     const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
 
-                    const message = `${emoji} ${x.title} (${x.token === 'USDC' ? '$' : ''}${x.rewardAmount.toLocaleString()}${x.token !== 'USDC' ? ` ${x.token}` : ''})\n🔗 ${modifiedLink}\n\n`;
+                    const rewardText = x.compensationType ?
+                        x.compensationType === 'fixed' ?
+                            `(${formatRewardText(x.rewardAmount, x.token)})` :
+                            x.compensationType === 'range' ?
+                                `(${formatRewardText(x.minRewardAsk, x.token)} - ${formatRewardText(x.maxRewardAsk, x.token)})` :
+                                x.compensationType === 'variable' ?
+                                    "Variable" :
+                                    "" : "";
+                    const message = `${emoji} ${x.title} ${rewardText}\n🔗 ${modifiedLink}\n\n`;
                     // breakdown: current message length + new message length + 43 (for the intro) + 170 (for the roles) and 2000 the max length of a discord message
                     if (bountyMessages[parts].length + message.length + 43 + 170 > 2000) {
                         bountyMessages[parts] =
@@ -91,11 +100,11 @@ client.once('ready', async () => {
                     }
                 });
 
-                if(bountyMessages.length === 1 && bountyMessages[0] === '') return;
+                if (bountyMessages.length === 1 && bountyMessages[0] === '') return;
                 if (bounties.length !== 1)
                     bountyMessages[parts] =
                         `🚨 New Listing(s) Added on Earn!${parts === 0 ? '' : ` (Part ${parts + 1})`}\n\n${bountyMessages[parts]}`;
-     
+
                 const rolesArray = Array.from(roles);
                 const guild = client.guilds.cache.get(server.id);
                 if (guild) {
