@@ -43,12 +43,11 @@ const formatRewardText = (reward: number, token: string) => {
 
 const introMessages = [
     "It's Friday, which means new earnings opportunities!",
-    "Here's a list of new opportunities for all you chads and weekend warriors",
-    "It’s raining gigs!🌦️This week's new drops on Earn",
+    "Here's a list of new opportunities for all you chads and weekend warriors:",
+    "It’s raining gigs! This week's new drops on Earn",
     '💥Boom! New listings, hot off the press',
-    'This week, make some bank with Earn 🏦',
-    'Your weekly (and favourite) alert with new listings is here 🙂',
-    '🚨 New Listing(s) Added on Earn!',
+    'This week, make some bank with Earn',
+    'Your weekly (and favourite) alert with new listings is here:',
 ];
 
 const getRandomIntro = () => introMessages[Math.floor(Math.random() * introMessages.length)];
@@ -73,56 +72,81 @@ client.once('ready', async () => {
             if (bounties.length === 0) return;
             const roles: Set<string> = new Set();
 
-            servers.map((server) => {
-                let parts = 0;
-                const bountyMessages: string[] = [''];
+            const categorizedBounties = {
+                Development: [],
+                Design: [],
+                Content: [],
+                Others: [],
+            };
 
-                bounties.forEach((x) => {
-                    if (x.region !== Regions.GLOBAL && x.region !== server.region) return;
-                    x.skills.forEach((sk) => {
-                        const skillRoles = getRoleFromSkill(sk.skills);
+            servers.forEach((server) => {
+                bounties.forEach((bounty: Bounties) => {
+                    if (bounty.region !== Regions.GLOBAL && bounty.region !== server.region) return;
+
+                    bounty.skills.forEach((skill) => {
+                        const skillRoles = getRoleFromSkill(skill.skills);
                         if (skillRoles !== null) {
                             skillRoles.forEach((role) => {
                                 roles.add(role);
                             });
                         }
                     });
-                    const emoji = getEmoji(x.skills[0]);
 
-                    const link = `https://earn.superteam.fun/listings/${x.type}/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
-                    const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
+                    const reward = bounty.rewardAmount ?? 0;
+                    const bountyData = {
+                        ...bounty,
+                        reward,
+                        link: `https://earn.superteam.fun/listings/${bounty.type}/${bounty.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`,
+                    };
 
-                    const rewardText = x.compensationType
-                        ? x.compensationType === 'fixed'
-                            ? `(${formatRewardText(x.rewardAmount, x.token)})`
-                            : x.compensationType === 'range'
-                              ? `(${formatRewardText(x.minRewardAsk, x.token)} - ${formatRewardText(x.maxRewardAsk, x.token)})`
-                              : x.compensationType === 'variable'
-                                ? '(Variable)'
-                                : ''
-                        : '';
-                    const message = `${emoji} ${x.title} ${rewardText}\n🔗 ${modifiedLink}\n\n`;
-                    // breakdown: current message length + new message length + 43 (for the intro) + 170 (for the roles) and 2000 the max length of a discord message
-                    if (bountyMessages[parts].length + message.length + 43 + 170 > 2000) {
-                        bountyMessages[parts] = `${bountyMessages[parts]}`;
-                        parts += 1;
-                        bountyMessages.push(message);
+                    if (bounty.skills.some((skill) => ['Developer', 'Blockchain', 'Frontend', 'Backend', 'Mobile'].includes(skill.skills))) {
+                        categorizedBounties.Development.push(bountyData);
+                    } else if (bounty.skills.some((skill) => skill.skills === 'Designer')) {
+                        categorizedBounties.Design.push(bountyData);
+                    } else if (bounty.skills.some((skill) => ['Writer', 'Video'].includes(skill.skills))) {
+                        categorizedBounties.Content.push(bountyData);
                     } else {
-                        bountyMessages[parts] += message;
+                        categorizedBounties.Others.push(bountyData);
                     }
                 });
 
-                if (bountyMessages.length === 1 && bountyMessages[0] === '') return;
-                if (bounties.length !== 1) bountyMessages[parts] = `${getRandomIntro()}\n\n${bountyMessages[parts]}`;
+                Object.keys(categorizedBounties).forEach((category) => {
+                    categorizedBounties[category].sort((a, b) => b.reward - a.reward);
+                });
+
+                const bountyMessages: string[] = [getRandomIntro()];
+
+                ['Development', 'Design', 'Content', 'Others'].forEach((category) => {
+                    const categoryHeader = `\n${category === 'Development' ? '💻' : category === 'Design' ? '🎨' : category === 'Content' ? '✍️' : '🛠️'} ${category}\n\n`;
+                    bountyMessages.push(categoryHeader);
+
+                    categorizedBounties[category].forEach((bounty) => {
+                        const rewardText = bounty.compensationType
+                            ? bounty.compensationType === 'fixed'
+                                ? `(${formatRewardText(bounty.rewardAmount, bounty.token)})`
+                                : bounty.compensationType === 'range'
+                                  ? `(${formatRewardText(bounty.minRewardAsk, bounty.token)} - ${formatRewardText(bounty.maxRewardAsk, bounty.token)})`
+                                  : bounty.compensationType === 'variable'
+                                    ? '(Variable)'
+                                    : ''
+                            : '';
+                        const message = `${bounty.title} ${rewardText}\n🔗 <${bounty.link}>\n\n`;
+                        if (bountyMessages[bountyMessages.length - 1].length + message.length + 170 > 2000) {
+                            bountyMessages.push(message);
+                        } else {
+                            bountyMessages[bountyMessages.length - 1] += message;
+                        }
+                    });
+                });
 
                 const rolesArray = Array.from(roles);
                 const guild = client.guilds.cache.get(server.id);
                 if (guild) {
-                    bountyMessages.forEach((message, index) => {
+                    bountyMessages.forEach((message) => {
                         const channel = guild.channels.cache.get(server.earn);
                         if (channel && channel.isTextBased()) {
                             let sendMessage = message;
-                            if (bountyMessages.length === 1 || bountyMessages.length - 1 === index) {
+                            if (bountyMessages[bountyMessages.length - 1] === message) {
                                 server.coreRoles.forEach((role) => {
                                     if (rolesArray.length !== 0 && role.name === 'Member') return;
                                     sendMessage += `${role.id} `;
@@ -131,17 +155,13 @@ client.once('ready', async () => {
                                 const rolesAdded = new Set();
                                 rolesArray.forEach((role) => {
                                     const guildRole = server.roles.find((x) => x.name === role);
-                                    // Added check to prevent duplicate roles tag
                                     if (guildRole && !rolesAdded.has(guildRole.id)) {
                                         rolesAdded.add(guildRole.id);
                                         sendMessage += `${guildRole.id} `;
                                     }
                                 });
-
-                                channel.send(sendMessage);
-                            } else {
-                                channel.send(sendMessage);
                             }
+                            channel.send(sendMessage);
                             console.log(`📤 Message sent to ${server.name}`);
                         }
                     });
