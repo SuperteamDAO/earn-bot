@@ -418,6 +418,40 @@ export const servers: Servers[] = [
             },
         ],
     },
+    {
+        id: '1106919982224384081',
+        name: 'Superteam Japan',
+        region: Regions.JAPAN,
+        earn: '1113746414367952957',
+        coreRoles: [
+            {
+                id: '<@&1239633466417741945>',
+                name: 'Member',
+            },
+            {
+                id: '<@&1239633525309706271>',
+                name: 'Contributor',
+            },
+            {
+                id: '<@&1110740156236976209>',
+                name: 'Lurker',
+            },
+        ],
+        roles: [
+            {
+                id: '<@&1112402969439252521>',
+                name: 'Developer',
+            },
+            {
+                id: '<@&1112693764922822676>',
+                name: 'Designer',
+            },
+            {
+                id: '<@&1239627966183510097>',
+                name: 'Writer',
+            },
+        ],
+    },
 ];
 
 export const skillsMap: SkillsMapping[] = [
