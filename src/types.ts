@@ -67,21 +67,22 @@ export interface Bounties {
 }
 
 export enum Regions {
-    GLOBAL="GLOBAL",
-    INDIA="INDIA",
-    VIETNAM="VIETNAM",
-    GERMANY="GERMANY",
-    TURKEY="TURKEY",
-    MEXICO="MEXICO",
-    UK="UK",
-    UAE="UAE",
-    NIGERIA="NIGERIA",
-    ISRAEL="ISRAEL",
-    BRAZIL="BRAZIL",
-    MALAYSIA="MALAYSIA",
-    BALKANS="BALKANS",
-    PHILIPPINES="PHILIPPINES",
-    KUMEKA="KUMEKA",
+    GLOBAL = 'GLOBAL',
+    INDIA = 'INDIA',
+    VIETNAM = 'VIETNAM',
+    GERMANY = 'GERMANY',
+    TURKEY = 'TURKEY',
+    MEXICO = 'MEXICO',
+    UK = 'UK',
+    UAE = 'UAE',
+    NIGERIA = 'NIGERIA',
+    ISRAEL = 'ISRAEL',
+    BRAZIL = 'BRAZIL',
+    MALAYSIA = 'MALAYSIA',
+    BALKANS = 'BALKANS',
+    PHILIPPINES = 'PHILIPPINES',
+    KUMEKA = 'KUMEKA',
+    JAPAN = 'JAPAN',
 }
 
 export interface Skills {

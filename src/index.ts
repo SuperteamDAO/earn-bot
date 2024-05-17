@@ -38,8 +38,20 @@ const getRoleFromSkill = (name: string) => {
 };
 
 const formatRewardText = (reward: number, token: string) => {
-    return `${token === 'USDC' ? '$' : ''}${reward.toLocaleString()}${token !== 'USDC' ? ` ${token}` : ''}`
-}
+    return `${token === 'USDC' ? '$' : ''}${reward.toLocaleString()}${token !== 'USDC' ? ` ${token}` : ''}`;
+};
+
+const introMessages = [
+    "It's Friday, which means new earnings opportunities!",
+    "Here's a list of new opportunities for all you chads and weekend warriors",
+    "It’s raining gigs!🌦️This week's new drops on Earn",
+    '💥Boom! New listings, hot off the press',
+    'This week, make some bank with Earn 🏦',
+    'Your weekly (and favourite) alert with new listings is here 🙂',
+    '🚨 New Listing(s) Added on Earn!',
+];
+
+const getRandomIntro = () => introMessages[Math.floor(Math.random() * introMessages.length)];
 
 client.once('ready', async () => {
     console.log(`⚡ Logged in as ${client.user.username}`);
@@ -50,13 +62,13 @@ client.once('ready', async () => {
     cron.schedule(
         cronTime,
         async () => {
-            console.log("🔥 Running cron")
+            console.log('🔥 Running cron');
             const connection = await mysql.createConnection(dbConfig);
             const [rows] = await connection.execute(
                 `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND isPrivate=0 AND status='OPEN' AND isWinnersAnnounced=0 AND publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW() AND (hackathonId IS NULL OR hackathonId = '')`,
             );
             const bounties: Bounties[] = rows as Bounties[];
-            console.log(`🚨 Bounties found ${bounties.length}`)
+            console.log(`🚨 Bounties found ${bounties.length}`);
 
             if (bounties.length === 0) return;
             const roles: Set<string> = new Set();
@@ -80,19 +92,19 @@ client.once('ready', async () => {
                     const link = `https://earn.superteam.fun/listings/${x.type}/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
                     const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
 
-                    const rewardText = x.compensationType ?
-                        x.compensationType === 'fixed' ?
-                            `(${formatRewardText(x.rewardAmount, x.token)})` :
-                            x.compensationType === 'range' ?
-                                `(${formatRewardText(x.minRewardAsk, x.token)} - ${formatRewardText(x.maxRewardAsk, x.token)})` :
-                                x.compensationType === 'variable' ?
-                                    "(Variable)" :
-                                    "" : "";
+                    const rewardText = x.compensationType
+                        ? x.compensationType === 'fixed'
+                            ? `(${formatRewardText(x.rewardAmount, x.token)})`
+                            : x.compensationType === 'range'
+                              ? `(${formatRewardText(x.minRewardAsk, x.token)} - ${formatRewardText(x.maxRewardAsk, x.token)})`
+                              : x.compensationType === 'variable'
+                                ? '(Variable)'
+                                : ''
+                        : '';
                     const message = `${emoji} ${x.title} ${rewardText}\n🔗 ${modifiedLink}\n\n`;
                     // breakdown: current message length + new message length + 43 (for the intro) + 170 (for the roles) and 2000 the max length of a discord message
                     if (bountyMessages[parts].length + message.length + 43 + 170 > 2000) {
-                        bountyMessages[parts] =
-                            `🚨 New Listing(s) Added on Earn! (Part ${parts + 1})\n\n${bountyMessages[parts]}`;
+                        bountyMessages[parts] = `${getRandomIntro()} (Part ${parts + 1})\n\n${bountyMessages[parts]}`;
                         parts += 1;
                         bountyMessages.push(message);
                     } else {
@@ -103,7 +115,7 @@ client.once('ready', async () => {
                 if (bountyMessages.length === 1 && bountyMessages[0] === '') return;
                 if (bounties.length !== 1)
                     bountyMessages[parts] =
-                        `🚨 New Listing(s) Added on Earn!${parts === 0 ? '' : ` (Part ${parts + 1})`}\n\n${bountyMessages[parts]}`;
+                        `${getRandomIntro()}${parts === 0 ? '' : ` (Part ${parts + 1})`}\n\n${bountyMessages[parts]}`;
 
                 const rolesArray = Array.from(roles);
                 const guild = client.guilds.cache.get(server.id);
@@ -132,7 +144,7 @@ client.once('ready', async () => {
                             } else {
                                 channel.send(sendMessage);
                             }
-                            console.log(`📤 Message sent to ${server.name}`)
+                            console.log(`📤 Message sent to ${server.name}`);
                         }
                     });
                 }
