@@ -104,7 +104,7 @@ client.once('ready', async () => {
                     const message = `${emoji} ${x.title} ${rewardText}\n🔗 ${modifiedLink}\n\n`;
                     // breakdown: current message length + new message length + 43 (for the intro) + 170 (for the roles) and 2000 the max length of a discord message
                     if (bountyMessages[parts].length + message.length + 43 + 170 > 2000) {
-                        bountyMessages[parts] = `${getRandomIntro()} (Part ${parts + 1})\n\n${bountyMessages[parts]}`;
+                        bountyMessages[parts] = `${bountyMessages[parts]}`;
                         parts += 1;
                         bountyMessages.push(message);
                     } else {
@@ -113,9 +113,7 @@ client.once('ready', async () => {
                 });
 
                 if (bountyMessages.length === 1 && bountyMessages[0] === '') return;
-                if (bounties.length !== 1)
-                    bountyMessages[parts] =
-                        `${getRandomIntro()}${parts === 0 ? '' : ` (Part ${parts + 1})`}\n\n${bountyMessages[parts]}`;
+                if (bounties.length !== 1) bountyMessages[parts] = `${getRandomIntro()}\n\n${bountyMessages[parts]}`;
 
                 const rolesArray = Array.from(roles);
                 const guild = client.guilds.cache.get(server.id);
