@@ -419,7 +419,7 @@ export const servers: Servers[] = [
         ],
     },
     {
-        id: '1106919982224384081',
+        id: '1240680941744029767',
         name: 'Superteam Japan',
         region: Regions.JAPAN,
         earn: '1113746414367952957',
