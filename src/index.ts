@@ -77,6 +77,13 @@ client.once('ready', async () => {
                 let parts = 0;
                 const bountyMessages: string[] = [''];
 
+                const categorizedBounties = {
+                    Development: [],
+                    Design: [],
+                    Content: [],
+                    Others: [],
+                };
+
                 bounties.forEach((x) => {
                     if (x.region !== Regions.GLOBAL && x.region !== server.region) return;
                     x.skills.forEach((sk) => {
@@ -87,33 +94,65 @@ client.once('ready', async () => {
                             });
                         }
                     });
-                    const emoji = getEmoji(x.skills[0]);
 
-                    const link = `https://earn.superteam.fun/listings/${x.type}/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
-                    const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
+                    const reward = x.rewardAmount ?? 0;
+                    const bountyData = {
+                        ...x,
+                        reward,
+                        link: `https://earn.superteam.fun/listings/${x.type}/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`,
+                    };
 
-                    const rewardText = x.compensationType
-                        ? x.compensationType === 'fixed'
-                            ? `(${formatRewardText(x.rewardAmount, x.token)})`
-                            : x.compensationType === 'range'
-                              ? `(${formatRewardText(x.minRewardAsk, x.token)} - ${formatRewardText(x.maxRewardAsk, x.token)})`
-                              : x.compensationType === 'variable'
-                                ? '(Variable)'
-                                : ''
-                        : '';
-                    const message = `${emoji} ${x.title} ${rewardText}\n🔗 ${modifiedLink}\n\n`;
-                    // breakdown: current message length + new message length + 43 (for the intro) + 170 (for the roles) and 2000 the max length of a discord message
-                    if (bountyMessages[parts].length + message.length + 43 + 170 > 2000) {
-                        bountyMessages[parts] = `${bountyMessages[parts]}`;
-                        parts += 1;
-                        bountyMessages.push(message);
+                    if (x.skills.some((sk) => ['Developer', 'Blockchain', 'Frontend', 'Backend', 'Mobile'].includes(sk.skills))) {
+                        categorizedBounties.Development.push(bountyData);
+                    } else if (x.skills.some((sk) => sk.skills === 'Designer')) {
+                        categorizedBounties.Design.push(bountyData);
+                    } else if (x.skills.some((sk) => ['Writer', 'Video'].includes(sk.skills))) {
+                        categorizedBounties.Content.push(bountyData);
                     } else {
-                        bountyMessages[parts] += message;
+                        categorizedBounties.Others.push(bountyData);
+                    }
+                });
+
+                Object.keys(categorizedBounties).forEach((category) => {
+                    categorizedBounties[category].sort((a, b) => b.reward - a.reward);
+                });
+
+                const headers = {
+                    Development: '💻 Development',
+                    Design: '🎨 Design',
+                    Content: '✍️ Content',
+                    Others: '🛠️ Others',
+                };
+
+                if (bounties.length !== 1) bountyMessages[parts] = `${getRandomIntro()}\n\n${bountyMessages[parts]}`;
+
+                Object.keys(categorizedBounties).forEach((category) => {
+                    if (categorizedBounties[category].length > 0) {
+                        bountyMessages[parts] += `\n${headers[category]}\n\n`;
+
+                        categorizedBounties[category].forEach((x) => {
+                            const rewardText = x.compensationType
+                                ? x.compensationType === 'fixed'
+                                    ? `(${formatRewardText(x.rewardAmount, x.token)})`
+                                    : x.compensationType === 'range'
+                                      ? `(${formatRewardText(x.minRewardAsk, x.token)} - ${formatRewardText(x.maxRewardAsk, x.token)})`
+                                      : x.compensationType === 'variable'
+                                        ? '(Variable)'
+                                        : ''
+                                : '';
+                            const message = `${x.title} ${rewardText}\n🔗 <${x.link}>\n\n`;
+                            if (bountyMessages[parts].length + message.length + 43 + 170 > 2000) {
+                                bountyMessages[parts] = `${bountyMessages[parts]}`;
+                                parts += 1;
+                                bountyMessages.push(message);
+                            } else {
+                                bountyMessages[parts] += message;
+                            }
+                        });
                     }
                 });
 
                 if (bountyMessages.length === 1 && bountyMessages[0] === '') return;
-                if (bounties.length !== 1) bountyMessages[parts] = `${getRandomIntro()}\n\n${bountyMessages[parts]}`;
 
                 const rolesArray = Array.from(roles);
                 const guild = client.guilds.cache.get(server.id);
