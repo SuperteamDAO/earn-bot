@@ -2,7 +2,7 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import * as dotenv from 'dotenv';
 import * as mysql from 'mysql2/promise';
 import cron from 'node-cron';
-import { Bounties, Regions, Skills } from './types';
+import { Bounties, Regions } from './types';
 import { servers, skillsMap } from './constants';
 
 dotenv.config();
@@ -16,20 +16,6 @@ const dbConfig = {
     ssl: {
         rejectUnauthorized: true,
     },
-};
-
-const getEmoji = (skill: Skills) => {
-    const getSkill = skillsMap.find((x) => x.name === skill.skills);
-    if (getSkill) {
-        if (getSkill.name === 'Content') {
-            if (skill.subskills.includes('Video')) {
-                return '🎥';
-            }
-            return '✍️';
-        }
-        return getSkill.emoji;
-    }
-    return '🤖';
 };
 
 const getRoleFromSkill = (name: string) => {
@@ -102,11 +88,11 @@ client.once('ready', async () => {
                         link: `https://earn.superteam.fun/listings/${x.type}/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`,
                     };
 
-                    if (x.skills.some((sk) => ['Developer', 'Blockchain', 'Frontend', 'Backend', 'Mobile'].includes(sk.skills))) {
+                    if (x.skills.some((sk) => ['Blockchain', 'Frontend', 'Backend', 'Mobile'].includes(sk.skills))) {
                         categorizedBounties.Development.push(bountyData);
-                    } else if (x.skills.some((sk) => sk.skills === 'Designer')) {
+                    } else if (x.skills.some((sk) => sk.skills === 'Design')) {
                         categorizedBounties.Design.push(bountyData);
-                    } else if (x.skills.some((sk) => ['Writer', 'Video'].includes(sk.skills))) {
+                    } else if (x.skills.some((sk) => ['Content'].includes(sk.skills))) {
                         categorizedBounties.Content.push(bountyData);
                     } else {
                         categorizedBounties.Others.push(bountyData);
