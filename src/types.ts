@@ -83,6 +83,7 @@ export enum Regions {
     PHILIPPINES = 'PHILIPPINES',
     KUMEKA = 'KUMEKA',
     JAPAN = 'JAPAN',
+    FRANCE = 'FRANCE',
 }
 
 export interface Skills {
