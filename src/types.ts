@@ -20,7 +20,6 @@ export interface Servers {
 export interface SkillsMapping {
     name: string;
     roles: string[] | null;
-    emoji: string;
 }
 
 export interface Bounties {
@@ -86,7 +85,7 @@ export enum Regions {
     FRANCE = 'FRANCE',
 }
 
-export interface Skills {
+interface Skills {
     skills: string;
     subskills: string[];
 }
