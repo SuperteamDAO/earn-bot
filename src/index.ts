@@ -29,11 +29,11 @@ const formatRewardText = (reward: number, token: string) => {
 
 const introMessages = [
     "It's Friday, which means new earnings opportunities!",
-    "Here's a list of new opportunities for all you chads and weekend warriors",
-    "It’s raining gigs!🌦️This week's new drops on Earn",
-    '💥Boom! New listings, hot off the press',
-    'This week, make some bank with Earn 🏦',
-    'Your weekly (and favourite) alert with new listings is here 🙂',
+    "Here's a list of new opportunities for all you chads and weekend warriors: ",
+    "It’s raining gigs! This week's new drops on Earn: ",
+    '💥 Boom! New listings, hot off the press: ',
+    'This week, make some bank with Supteream Earn: ',
+    'Your weekly (and favourite) alert about new listings is here: ',
     '🚨 New Listing(s) Added on Earn!',
 ];
 
@@ -42,8 +42,8 @@ const getRandomIntro = () => introMessages[Math.floor(Math.random() * introMessa
 client.once('ready', async () => {
     console.log(`⚡ Logged in as ${client.user.username}`);
 
-    const cronTime = '0 12 * * 5';
-    const sqlInterval = `INTERVAL 7 DAY`;
+    const cronTime = '*/30 * * * * *';
+    const sqlInterval = `INTERVAL 20 DAY`;
 
     cron.schedule(
         cronTime,
@@ -126,7 +126,7 @@ client.once('ready', async () => {
                                         ? '(Variable)'
                                         : ''
                                 : '';
-                            const message = `${x.title} ${rewardText}\n🔗 <${x.link}>\n\n`;
+                            const message = `${x.title} ${rewardText}\n <${x.link}>\n\n`;
                             if (bountyMessages[parts].length + message.length + 43 + 170 > 2000) {
                                 bountyMessages[parts] = `${bountyMessages[parts]}`;
                                 parts += 1;
