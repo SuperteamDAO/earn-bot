@@ -42,8 +42,8 @@ const getRandomIntro = () => introMessages[Math.floor(Math.random() * introMessa
 client.once('ready', async () => {
     console.log(`⚡ Logged in as ${client.user.username}`);
 
-    const cronTime = '*/30 * * * * *';
-    const sqlInterval = `INTERVAL 20 DAY`;
+    const cronTime = '0 12 * * 5';
+    const sqlInterval = `INTERVAL 7 DAY`;
 
     cron.schedule(
         cronTime,
