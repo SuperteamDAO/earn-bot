@@ -2,7 +2,7 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import * as dotenv from 'dotenv';
 import * as mysql from 'mysql2/promise';
 import cron from 'node-cron';
-import { Bounties, Regions, Skills } from './types';
+import { Bounties, Regions } from './types';
 import { servers, skillsMap } from './constants';
 
 dotenv.config();
@@ -18,20 +18,6 @@ const dbConfig = {
     },
 };
 
-const getEmoji = (skill: Skills) => {
-    const getSkill = skillsMap.find((x) => x.name === skill.skills);
-    if (getSkill) {
-        if (getSkill.name === 'Content') {
-            if (skill.subskills.includes('Video')) {
-                return '🎥';
-            }
-            return '✍️';
-        }
-        return getSkill.emoji;
-    }
-    return '🤖';
-};
-
 const getRoleFromSkill = (name: string) => {
     const skill = skillsMap.find((x) => x.name === name);
     if (skill) return skill.roles;
@@ -43,11 +29,11 @@ const formatRewardText = (reward: number, token: string) => {
 
 const introMessages = [
     "It's Friday, which means new earnings opportunities!",
-    "Here's a list of new opportunities for all you chads and weekend warriors",
-    "It’s raining gigs!🌦️This week's new drops on Earn",
-    '💥Boom! New listings, hot off the press',
-    'This week, make some bank with Earn 🏦',
-    'Your weekly (and favourite) alert with new listings is here 🙂',
+    "Here's a list of new opportunities for all you chads and weekend warriors: ",
+    "It’s raining gigs! This week's new drops on Earn: ",
+    '💥 Boom! New listings, hot off the press: ',
+    'This week, make some bank with Supteream Earn: ',
+    'Your weekly (and favourite) alert about new listings is here: ',
     '🚨 New Listing(s) Added on Earn!',
 ];
 
@@ -77,6 +63,13 @@ client.once('ready', async () => {
                 let parts = 0;
                 const bountyMessages: string[] = [''];
 
+                const categorizedBounties = {
+                    Development: [],
+                    Design: [],
+                    Content: [],
+                    Others: [],
+                };
+
                 bounties.forEach((x) => {
                     if (x.region !== Regions.GLOBAL && x.region !== server.region) return;
                     x.skills.forEach((sk) => {
@@ -87,33 +80,65 @@ client.once('ready', async () => {
                             });
                         }
                     });
-                    const emoji = getEmoji(x.skills[0]);
 
-                    const link = `https://earn.superteam.fun/listings/${x.type}/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`;
-                    const modifiedLink = bounties.length === 1 ? link : `<${link}>`;
+                    const reward = x.rewardAmount ?? 0;
+                    const bountyData = {
+                        ...x,
+                        reward,
+                        link: `https://earn.superteam.fun/listings/${x.type}/${x.slug}/?utm_source=superteam&utm_medium=discord&utm_campaign=bounties`,
+                    };
 
-                    const rewardText = x.compensationType
-                        ? x.compensationType === 'fixed'
-                            ? `(${formatRewardText(x.rewardAmount, x.token)})`
-                            : x.compensationType === 'range'
-                              ? `(${formatRewardText(x.minRewardAsk, x.token)} - ${formatRewardText(x.maxRewardAsk, x.token)})`
-                              : x.compensationType === 'variable'
-                                ? '(Variable)'
-                                : ''
-                        : '';
-                    const message = `${emoji} ${x.title} ${rewardText}\n🔗 ${modifiedLink}\n\n`;
-                    // breakdown: current message length + new message length + 43 (for the intro) + 170 (for the roles) and 2000 the max length of a discord message
-                    if (bountyMessages[parts].length + message.length + 43 + 170 > 2000) {
-                        bountyMessages[parts] = `${bountyMessages[parts]}`;
-                        parts += 1;
-                        bountyMessages.push(message);
+                    if (x.skills.some((sk) => ['Blockchain', 'Frontend', 'Backend', 'Mobile'].includes(sk.skills))) {
+                        categorizedBounties.Development.push(bountyData);
+                    } else if (x.skills.some((sk) => sk.skills === 'Design')) {
+                        categorizedBounties.Design.push(bountyData);
+                    } else if (x.skills.some((sk) => ['Content'].includes(sk.skills))) {
+                        categorizedBounties.Content.push(bountyData);
                     } else {
-                        bountyMessages[parts] += message;
+                        categorizedBounties.Others.push(bountyData);
+                    }
+                });
+
+                Object.keys(categorizedBounties).forEach((category) => {
+                    categorizedBounties[category].sort((a, b) => b.reward - a.reward);
+                });
+
+                const headers = {
+                    Development: '💻 Development',
+                    Design: '🎨 Design',
+                    Content: '✍️ Content',
+                    Others: '🛠️ Others',
+                };
+
+                if (bounties.length !== 1) bountyMessages[parts] = `${getRandomIntro()}\n\n${bountyMessages[parts]}`;
+
+                Object.keys(categorizedBounties).forEach((category) => {
+                    if (categorizedBounties[category].length > 0) {
+                        bountyMessages[parts] += `\n${headers[category]}\n\n`;
+
+                        categorizedBounties[category].forEach((x) => {
+                            const rewardText = x.compensationType
+                                ? x.compensationType === 'fixed'
+                                    ? `(${formatRewardText(x.rewardAmount, x.token)})`
+                                    : x.compensationType === 'range'
+                                      ? `(${formatRewardText(x.minRewardAsk, x.token)} - ${formatRewardText(x.maxRewardAsk, x.token)})`
+                                      : x.compensationType === 'variable'
+                                        ? '(Variable)'
+                                        : ''
+                                : '';
+                            const message = `${x.title} ${rewardText}\n <${x.link}>\n\n`;
+                            if (bountyMessages[parts].length + message.length + 43 + 170 > 2000) {
+                                bountyMessages[parts] = `${bountyMessages[parts]}`;
+                                parts += 1;
+                                bountyMessages.push(message);
+                            } else {
+                                bountyMessages[parts] += message;
+                            }
+                        });
                     }
                 });
 
                 if (bountyMessages.length === 1 && bountyMessages[0] === '') return;
-                if (bounties.length !== 1) bountyMessages[parts] = `${getRandomIntro()}\n\n${bountyMessages[parts]}`;
 
                 const rolesArray = Array.from(roles);
                 const guild = client.guilds.cache.get(server.id);

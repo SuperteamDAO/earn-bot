@@ -489,49 +489,13 @@ export const servers: Servers[] = [
 ];
 
 export const skillsMap: SkillsMapping[] = [
-    {
-        name: 'Frontend',
-        roles: ['Developer'],
-        emoji: '💻',
-    },
-    {
-        name: 'Backend',
-        roles: ['Developer'],
-        emoji: '💻',
-    },
-    {
-        name: 'Blockchain',
-        roles: ['Developer'],
-        emoji: '💻',
-    },
-    {
-        name: 'Mobile',
-        roles: ['Developer'],
-        emoji: '📱',
-    },
-    {
-        name: 'Design',
-        roles: ['Designer'],
-        emoji: '🎨',
-    },
-    {
-        name: 'Community',
-        roles: null,
-        emoji: '🫂',
-    },
-    {
-        name: 'Growth',
-        roles: null,
-        emoji: '📈',
-    },
-    {
-        name: 'Content',
-        roles: ['Writer', 'Video'],
-        emoji: '✍️',
-    },
-    {
-        name: 'Other',
-        roles: null,
-        emoji: '⭐',
-    },
+    { name: 'Frontend', roles: ['Developer'] },
+    { name: 'Backend', roles: ['Developer'] },
+    { name: 'Blockchain', roles: ['Developer'] },
+    { name: 'Mobile', roles: ['Developer'] },
+    { name: 'Design', roles: ['Designer'] },
+    { name: 'Community', roles: null },
+    { name: 'Growth', roles: null },
+    { name: 'Content', roles: ['Writer', 'Video'] },
+    { name: 'Other', roles: null },
 ];
