@@ -28,7 +28,7 @@ const formatRewardText = (reward: number, token: string) => {
 };
 
 const introMessages = [
-    "It's Friday, which means new earnings opportunities!",
+    "It's Friday, which means new earning opportunities!",
     "Here's a list of new opportunities for all you chads and weekend warriors: ",
     "It’s raining gigs! This week's new drops on Earn: ",
     '💥 Boom! New listings, hot off the press: ',
