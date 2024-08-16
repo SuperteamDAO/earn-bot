@@ -51,7 +51,21 @@ client.once('ready', async () => {
             console.log('🔥 Running cron');
             const connection = await mysql.createConnection(dbConfig);
             const [rows] = await connection.execute(
-                `SELECT * FROM Bounties WHERE isPublished=1 AND isActive=1 AND isArchived=0 AND isPrivate=0 AND status='OPEN' AND isWinnersAnnounced=0 AND publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW() AND (hackathonId IS NULL OR hackathonId = '')`,
+                `
+                SELECT Bounties.* 
+                FROM Bounties 
+                JOIN Sponsors ON Bounties.sponsorId = Sponsors.id
+                WHERE Bounties.isPublished = 1 
+                  AND Bounties.isActive = 1 
+                  AND Bounties.isArchived = 0 
+                  AND Bounties.isPrivate = 0 
+                  AND Bounties.status = 'OPEN' 
+                  AND Bounties.isWinnersAnnounced = 0 
+                  AND Bounties.publishedAt BETWEEN NOW() - ? AND NOW() 
+                  AND (Bounties.hackathonId IS NULL OR Bounties.hackathonId = '')
+                  AND Sponsors.isVerified = true
+              `,
+                [sqlInterval],
             );
             const bounties: Bounties[] = rows as Bounties[];
             console.log(`🚨 Bounties found ${bounties.length}`);
