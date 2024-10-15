@@ -61,10 +61,10 @@ client.once('ready', async () => {
                   AND Bounties.isPrivate = 0 
                   AND Bounties.status = 'OPEN' 
                   AND Bounties.isWinnersAnnounced = 0 
-                  AND Bounties.publishedAt BETWEEN NOW() - ? AND NOW() 
+                  AND Bounties.publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW() 
                   AND (Bounties.hackathonId IS NULL OR Bounties.hackathonId = '')
                   AND Sponsors.isVerified = true
-              `,
+                `,
                 [sqlInterval],
             );
             const bounties: Bounties[] = rows as Bounties[];

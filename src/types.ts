@@ -36,7 +36,6 @@ export interface Bounties {
     sponsorId: string;
     pocId: string;
     source: string;
-    sourceDetails: any;
     isPublished: number;
     isFeatured: number;
     isActive: number;
@@ -57,7 +56,6 @@ export interface Bounties {
     applicationType: string;
     timeToComplete: any;
     references: any;
-    winners: any;
     publishedAt: string;
     isPrivate: boolean;
     compensationType?: 'fixed' | 'range' | 'variable';
