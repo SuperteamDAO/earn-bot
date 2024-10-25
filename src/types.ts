@@ -50,7 +50,7 @@ export interface Bounties {
     totalWinnersSelected: number;
     isWinnersAnnounced: number;
     templateId: string;
-    region: Regions;
+    region: string;
     pocSocials: any;
     hackathonprize: number;
     applicationType: string;
