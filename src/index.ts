@@ -63,7 +63,7 @@ client.once('ready', async () => {
                   AND Bounties.isWinnersAnnounced = 0 
                   AND Bounties.publishedAt BETWEEN NOW() - ${sqlInterval} AND NOW() 
                   AND (Bounties.hackathonId IS NULL OR Bounties.hackathonId = '')
-                  AND Sponsors.isVerified = true
+                  AND Bounties.usdValue >= 500
                 `,
                 [sqlInterval],
             );
