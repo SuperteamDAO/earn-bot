@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import * as mysql from 'mysql2/promise';
 import cron from 'node-cron';
 import { Bounties, Regions } from './types';
+import { logError, logInfo } from './logger';
 import { servers, skillsMap } from './constants';
 
 dotenv.config();
@@ -40,7 +41,7 @@ const introMessages = [
 const getRandomIntro = () => introMessages[Math.floor(Math.random() * introMessages.length)];
 
 client.once('ready', async () => {
-    console.log(`⚡ Logged in as ${client.user.username}`);
+    await logInfo('Discord client ready', { username: client.user?.username });
 
     const cronTime = '0 12 * * 5';
     const sqlInterval = `INTERVAL 7 DAY`;
@@ -48,7 +49,7 @@ client.once('ready', async () => {
     cron.schedule(
         cronTime,
         async () => {
-            console.log('🔥 Running cron');
+            await logInfo('Running cron');
             const connection = await mysql.createConnection(dbConfig);
             const [rows] = await connection.execute(
                 `
@@ -68,7 +69,7 @@ client.once('ready', async () => {
                 [sqlInterval],
             );
             const bounties: Bounties[] = rows as Bounties[];
-            console.log(`🚨 Bounties found ${bounties.length}`);
+            await logInfo('Bounties fetched', { count: bounties.length });
 
             if (bounties.length === 0) return;
             const roles: Set<string> = new Set();
@@ -159,6 +160,20 @@ client.once('ready', async () => {
                 if (guild) {
                     bountyMessages.forEach((message, index) => {
                         const channel = guild.channels.cache.get(server.earn);
+                        if (!channel) {
+                            logError(new Error('Channel not found'), {
+                                server: server.name,
+                                channelId: server.earn,
+                            }).catch(() => {});
+                            return;
+                        }
+                        if (!channel.isTextBased()) {
+                            logError(new Error('Channel is not text-based'), {
+                                server: server.name,
+                                channelId: server.earn,
+                            }).catch(() => {});
+                            return;
+                        }
                         if (channel && channel.isTextBased()) {
                             let sendMessage = message;
                             if (bountyMessages.length === 1 || bountyMessages.length - 1 === index) {
@@ -177,13 +192,22 @@ client.once('ready', async () => {
                                     }
                                 });
 
-                                channel.send(sendMessage);
+                                channel
+                                    .send(sendMessage)
+                                    .then(() => logInfo('Message sent', { server: server.name }).catch(() => {}))
+                                    .catch((err) => logError(err, { server: server.name, stage: 'send' }));
                             } else {
-                                channel.send(sendMessage);
+                                channel
+                                    .send(sendMessage)
+                                    .then(() => logInfo('Message sent', { server: server.name }).catch(() => {}))
+                                    .catch((err) => logError(err, { server: server.name, stage: 'send' }));
                             }
-                            console.log(`📤 Message sent to ${server.name}`);
                         }
                     });
+                } else {
+                    logError(new Error('Guild not found'), { serverId: server.id, serverName: server.name }).catch(
+                        () => {},
+                    );
                 }
             });
         },
@@ -191,4 +215,4 @@ client.once('ready', async () => {
     );
 });
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(process.env.DISCORD_TOKEN).catch((err) => logError(err, { stage: 'login' }));
