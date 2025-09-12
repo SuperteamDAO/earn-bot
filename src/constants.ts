@@ -486,6 +486,40 @@ export const servers: Servers[] = [
             },
         ],
     },
+    {
+        id: '1413058229608517704',
+        name: 'Superteam Nepal',
+        region: Regions.NEPAL,
+        earn: '1413059573757251614',
+        coreRoles: [
+            {
+                id: '<@&1414331570264866826>',
+                name: 'Member',
+            },
+            {
+                id: '<@&1414295845511364668>',
+                name: 'Contributor',
+            },
+            {
+                id: '<@&1413417266237935647>',
+                name: 'Lurker',
+            },
+        ],
+        roles: [
+            {
+                id: '<@&1413414401419120650>',
+                name: 'Developer',
+            },
+            {
+                id: '<@&1415771508843741184>',
+                name: 'Writer',
+            },
+            {
+                id: '<@&1413415303420842034>',
+                name: 'Designer',
+            },
+        ],
+    },
 ];
 
 export const skillsMap: SkillsMapping[] = [

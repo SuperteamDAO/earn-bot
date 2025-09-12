@@ -81,6 +81,7 @@ export enum Regions {
     KUMEKA = 'Kumeka',
     JAPAN = 'Japan',
     FRANCE = 'France',
+    NEPAL = 'Nepal',
 }
 
 interface Skills {
