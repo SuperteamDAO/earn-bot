@@ -351,40 +351,6 @@ export const servers: Servers[] = [
         ],
     },
     {
-        id: '1198961988391407616',
-        name: 'Superteam Malaysia',
-        region: Regions.MALAYSIA,
-        earn: '1198961988865360011',
-        coreRoles: [
-            {
-                id: '<@&1198961988391407625>',
-                name: 'Member',
-            },
-            {
-                id: '<@&1204366943742599239>',
-                name: 'Contributor',
-            },
-            {
-                id: '<@&1198961988391407624>',
-                name: 'Lurker',
-            },
-        ],
-        roles: [
-            {
-                id: '<@&1198961988391407623>',
-                name: 'Developer',
-            },
-            {
-                id: '<@&1198961988391407622>',
-                name: 'Designer',
-            },
-            {
-                id: '<@&1198961988391407618>',
-                name: 'Writer',
-            },
-        ],
-    },
-    {
         id: '1162389221911310366',
         name: 'Superteam Kumeka',
         region: Regions.KUMEKA,
@@ -419,10 +385,10 @@ export const servers: Servers[] = [
         ],
     },
     {
-        id: '1240680941744029767',
+        id: '1106919982224384081',
         name: 'Superteam Japan',
         region: Regions.JAPAN,
-        earn: '1113746414367952957',
+        earn: '1240680941744029767',
         coreRoles: [
             {
                 id: '<@&1239633466417741945>',
