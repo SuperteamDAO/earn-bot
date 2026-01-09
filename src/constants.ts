@@ -253,36 +253,6 @@ export const servers: Servers[] = [
         ],
     },
     {
-        id: '1038020662071148574',
-        name: 'Superteam Turkey',
-        region: Regions.TURKEY,
-        earn: '1038173920613896222',
-        coreRoles: [
-            {
-                id: '<@&1038020662071148576>',
-                name: 'Member',
-            },
-            {
-                id: '<@&1038020662071148575>',
-                name: 'Lurker',
-            },
-        ],
-        roles: [
-            {
-                id: '<@&1067818701136609451>',
-                name: 'Developer',
-            },
-            {
-                id: '<@&1067818615019147284>',
-                name: 'Designer',
-            },
-            {
-                id: '<@&1067818742882500659>',
-                name: 'Writer',
-            },
-        ],
-    },
-    {
         id: '1198949931243819039',
         name: 'Superteam Philippines',
         region: Regions.PHILIPPINES,
