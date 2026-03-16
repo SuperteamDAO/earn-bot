@@ -71,7 +71,7 @@ export enum Regions {
     TURKEY = 'Turkey',
     MEXICO = 'Mexico',
     UK = 'United Kingdom',
-    UAE = 'UAE',
+    UAE = 'United Arab Emirates',
     NIGERIA = 'Nigeria',
     ISRAEL = 'Israel',
     BRAZIL = 'Brazil',
